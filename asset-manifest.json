@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/GenAIClaimsExaminer/static/css/main.e6fff4d2.css",
-    "main.js": "/GenAIClaimsExaminer/static/js/main.cf563d5a.js",
+    "main.js": "/GenAIClaimsExaminer/static/js/main.d27db559.js",
     "static/js/453.85ab5283.chunk.js": "/GenAIClaimsExaminer/static/js/453.85ab5283.chunk.js",
     "static/media/Picture5.png": "/GenAIClaimsExaminer/static/media/Picture5.326b549f539beaa520f7.png",
     "index.html": "/GenAIClaimsExaminer/index.html",
     "main.e6fff4d2.css.map": "/GenAIClaimsExaminer/static/css/main.e6fff4d2.css.map",
-    "main.cf563d5a.js.map": "/GenAIClaimsExaminer/static/js/main.cf563d5a.js.map",
+    "main.d27db559.js.map": "/GenAIClaimsExaminer/static/js/main.d27db559.js.map",
     "453.85ab5283.chunk.js.map": "/GenAIClaimsExaminer/static/js/453.85ab5283.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6fff4d2.css",
-    "static/js/main.cf563d5a.js"
+    "static/js/main.d27db559.js"
   ]
 }
