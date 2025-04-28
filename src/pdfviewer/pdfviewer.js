@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Document, Page } from 'react-pdf';
+import { Document, Page, pdfjs } from 'react-pdf';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 // const PdfViewer = ({ filePath = "/251391026100.pdf" }) => {
 const PdfViewer = ({ filePath = process.env.PUBLIC_URL + "/251391026100.pdf" }) => {
