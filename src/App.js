@@ -8,6 +8,12 @@ import React, { useState, useEffect } from 'react';
 import {ProgressBar, Button } from 'react-bootstrap';
 import PDFv from './pdfviewer/pdfviewer'
 import './pdfworker'
+import mammoth from 'mammoth';
+import Dropdown from 'react-bootstrap/Dropdown';
+import {
+  BarChart, Bar, PieChart, Pie, LineChart, Line,
+  CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell
+} from 'recharts';
 
 function App() {
   const [showContainer3Content, setShowContainer3Content] = useState(false);
@@ -17,6 +23,47 @@ function App() {
   const [progress4, setProgress4] = useState(0);
   const [startLoading4, setStartLoading4] = useState(false);
   const [showPopup4, setShowPopup4] = useState(false);
+  const fileInputRef = React.useRef(null);
+  const [wordContent, setWordContent] = useState("");
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [textareaContent, setTextareaContent] = useState("");
+  const [fullTextToType, setFullTextToType] = useState(""); // NEW
+  const textareaRef = React.useRef(null);
+  const [isHidden, setIsHidden] = useState(false);
+  const [showLoadingIndicator, setShowLoadingIndicator] = useState(false);
+  const [startTyping, setStartTyping] = useState(false);
+  const [pendingFullText, setPendingFullText] = useState("");
+  const [showGenKAButton, setShowGenKAButton] = useState(false);
+  const [showPanelAction, setShowPanelAction] = useState(false);
+  const [showPanelValidation, setShowPanelValidation] = useState(false);
+  const [showPanelPDF, setShowPanelPDF] = useState(false);
+  const [showMainContainer, setShowMainContainer] = useState(true);
+
+  useEffect(() => {
+    if (startTyping && fullTextToType.length > 0) {
+      setTextareaContent(""); // Reset textarea
+      setShowGenKAButton(false); // Hide button during typing
+  
+      let index = 0;
+      const interval = setInterval(() => {
+        setTextareaContent((prev) => prev + fullTextToType.charAt(index));
+        index++;
+  
+        if (textareaRef.current) {
+          textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+        }
+  
+        if (index >= fullTextToType.length) {
+          clearInterval(interval);
+          setShowGenKAButton(true); // ✅ Show button once typing complete
+        }
+      }, 15);
+  
+      return () => clearInterval(interval);
+    }
+  }, [startTyping, fullTextToType]);
+
+
 
   useEffect(() => {
     let timer;
@@ -56,10 +103,26 @@ function App() {
   }, [startLoading4, progress4]);
 
 
+const handleDownload = () => {
+  setShowMainContainer(false); // ✅ Hide main container
+  // Later: You can also trigger other download actions if needed
+  
+};
+
+const handleFinalDownload = () => {
+  alert('Final Download triggered!');
+  // You can later add logic to export dashboard as PDF, image, etc.
+};
+
+
+const handleHome = () => {
+  setShowMainContainer(true); // ✅ Show the main container again
+};
   const handleStartProgress = () => {
     setProgress(0);
     setStartLoading(true);
     setShowPopup(false); // reset popup when starting again
+    setShowPanelAction(true); // ✅ Now show Panel Action
   };
 
   const handleProceed = (answer) => {
@@ -69,22 +132,451 @@ function App() {
       setStartLoading4(true);
       setShowContainer3Content(true);
       setShowPopup4(false); // just to be safe
+      setShowPanelValidation(true); // ✅ Now show Panel Validation
+      setShowPanelPDF(true);        // ✅ show panelPDF
     } else {
       alert("Action cancelled.");
     }
   };
 
+  const handleStartsProgress = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const sheet3Data = [
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-01-21 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "JAISINGHANI ,AJAY",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-03-10 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-03 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "B ,SANTHOSHA",
+      "Offshore": "Yes",
+      "INPUT_DATE": "2025-03-20 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "MUNSHI ,TANVEER",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-03-25 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-15 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "DUNLAP ,BRENDALEE",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-15 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-16 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-17 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-18 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-18 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-21 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-21 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-21 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-22 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-22 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-22 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-22 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-22 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-22 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-22 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": ""
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "11 - Pended; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    },
+    {
+      "Manager": "",
+      "Offshore": "No",
+      "INPUT_DATE": "2025-04-23 00:00:00",
+      "ASO_Vs_FI": "FI",
+      "New Status": "01 - Accepted; Awaiting Batch"
+    }
+  ];
+
+  const DashboardCard = ({ title, children }) => (
+    <div style={{
+      backgroundColor: '#ffffff',
+      padding: '20px',
+      borderRadius: '10px',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+      marginBottom: '30px'
+    }}>
+      <h5 style={{ textAlign: 'center', marginBottom: '20px' }}>{title}</h5>
+      {children}
+    </div>
+  );
+  
+  const getClaimsByManager = () => {
+    const counts = {};
+    sheet3Data.forEach(item => {
+      const manager = item["Manager"] || "Unassigned";
+      counts[manager] = (counts[manager] || 0) + 1;
+    });
+    return Object.keys(counts).map(manager => ({ Manager: manager, Count: counts[manager] }));
+  };
+  
+  const getOffshoreSplit = () => {
+    const counts = { Offshore: 0, Onshore: 0 };
+    sheet3Data.forEach(item => {
+      if (item["Offshore"] === "Yes") counts.Offshore++;
+      else counts.Onshore++;
+    });
+    return [
+      { name: "Offshore", value: counts.Offshore },
+      { name: "Onshore", value: counts.Onshore },
+    ];
+  };
+  
+  const getAsoFiSplit = () => {
+    const counts = { ASO: 0, FI: 0 };
+    sheet3Data.forEach(item => {
+      if (item["ASO_Vs_FI"] === "ASO") counts.ASO++;
+      else if (item["ASO_Vs_FI"] === "FI") counts.FI++;
+    });
+    return [
+      { Type: "ASO", Count: counts.ASO },
+      { Type: "FI", Count: counts.FI },
+    ];
+  };
+  
+  const getClaimsOverTime = () => {
+    const counts = {};
+    sheet3Data.forEach(item => {
+      let date = item["INPUT_DATE"];
+      if (date) {
+        if (typeof date === 'string') date = date.split(' ')[0];
+        counts[date] = (counts[date] || 0) + 1;
+      }
+    });
+    return Object.keys(counts).map(date => ({ Date: date, Count: counts[date] }));
+  };
+  
+  const getStatusBreakdown = () => {
+    const counts = {};
+    sheet3Data.forEach(item => {
+      const status = item["New Status"] || "Unknown";
+      counts[status] = (counts[status] || 0) + 1;
+    });
+    return Object.keys(counts).map(status => ({ name: status, value: counts[status] }));
+  };
+
+  
   const loadingSteps = [
     "",
     "Initializing...",
-    "Analyzing Input...",
-    "Validating Parameters...",
-    "Checking Database...",
-    "Fetching Data...",
-    "Running Computations...",
-    "Verifying Integrity...",
-    "Compiling Results...",
-    "Finalizing Output...",
+    "Facets Claims Data Validation...",
+    "Facets Claims Data Validation...",
+    "Facets Claims Data Validation...",
+    "Facets Claims Data Validation...",
+    "Facets Claims Data Validation...",
+    "Facets Claims Data Validation...",
+    "Facets Claims Data Validation...",
+    "Facets Claims Data Validation...",
     "Complete!"
   ];
   
@@ -118,38 +610,6 @@ function App() {
         { word: "No OON saving", highlight: true, color: "#C52E59", fontColor: "white", bold: true},],},  
     { text: " "},
     { text: "15 months Period :  DOS - 9/12/2024, Received Date - 4/21/2025, Meets the timely filing period", bold: true },
-    /*{ text: "• State exceptions" },
-    { text: "• Provider/Facility contract exception" },
-    { text: "• Client Account level exception" },
-    { text: "• Client-Specific Network (CSN) level" },
-    { text: "• The claim is being adjusted per a request from Legal." },
-    { text: "• The claim was prepriced by LifeSOURCE." },
-    { text: "• The claim has a LifeSOURCE contracted / negotiated rate." },
-    { text: "• The claim is for Medicaid reimbursement." },
-    { text: "• This edit does not apply. Follow standard processing guidelines." },
-    { text: "• Document the T4 Notes field with 'network prov'." },
-    { text: "• Cigna is secondary, including Medicare" },
-    { text: "• Medicaid Reclamation claim" },
-    { text: "• Veteran Administration (VA) claim" },
-    { text: "• Adjustment" },
-    { text: "• Corrected claim" },
-    { text: "• The timely filing starts on the last consecutive day of the confinement for inpatient admission facility charges. " },
-    { text: "• The timely filing period begins with the DOS of the last visit for global maternity services." },
-    { text: "• If multiple dates of service are billed, review and process per each DOS submitted." },
-    { text: "• State exceptions" }, 
-    { text: " "},
-    
-    { text: " "},
-    
-    /*{ text: "Claims Data Verification", bold: true },
-    { text: "Patient demographic – (Match)" },
-    { text: "Billed services and amounts (Match)" },
-    { text: "COB" },
-    { text: "Sagility AI copilot Actions", bold: true },
-    { text: "Provider and Facility Selection for Prepay Edits", link: "https://example.com/auth-check" },
-    { text: "Duplicates", bold: true },
-    { text: "Warning messages", bold: true },
-    { text: "Authorization verification", bold: true  }*/
   ];
 
   const visibleLinesCount = Math.floor(progress / (100 / resultSteps.length));
@@ -169,6 +629,69 @@ function App() {
     "Complete!"
   ];
   
+  const fileTextMap = {
+    "Timely Filing Deny Incorr Facets Prepay Edit": `TThis document outlines the timely filing process for Individual Family Plans (IFP) during the Prepay Edit phase. The purpose is to ensure timely filing is applied correctly, taking into account the following details:
+
+1. **Prepay Timely Filing IFP Facets Prepay Edit**
+
+2. **Edit Notes**
+   - This article is for Prepay use only; F344.
+   - It is a Total Quality (TQ)/Underpayment edit.
+   - For claims with a DOS before July 11, 2023, refer to the Prepay Timely Filing Pre-COVID and COVID Calculation article.
+   - Cigna standards will apply whichever of the following allows the maximum number of days:
+     - State exceptions
+     - Provider/Facility contract exception
+     - Client Account level exception
+     - Client-Specific Network (CSN) level
+
+3. **Process Steps**
+
+   a. **Exclusions**
+   - If any exclusions apply (e.g., legal adjustment, LifeSOURCE prepriced claim, LifeSOURCE contracted rate, Medicaid reimbursement), follow standard processing guidelines.
+
+   b. **Provider Selection**
+   - If the provider is Out-of-Network (OON), proceed to the next step.
+   - If the provider is In-Network (INN), document "network prov" in the T4 Notes field and follow standard processing guidelines.
+
+   c. **Claim Type**
+   - For Cigna secondary coverage (Medicare, Medicaid, VA, adjustment, or corrected claim), determine if the claim was received within the timely filing period.
+   - For North Carolina IFP accounts: If the claim is within 18 months of the service date, override timely filing by checking the Bypass Claim Accept Months (EXCD) OCA.
+   - For non-NC IFP accounts: If the claim is within 15 months of the service date, override timely filing by checking the Bypass Claim Accept Months (EXCD) OCA.
+
+   d. **POTF**
+   - If Proof of Timely Filing (POTF) is attached, follow standard processing guidelines.
+
+   e. **Savings Checks**
+   - If the claim has been previously reviewed for OON savings and/or the Maximum Reimbursable Charge (MRC) pricing, bypass the PCA Pend (EXCD PCO).
+
+   f. **Prepay ID and Error Codes**
+   - Document the Prepay ID and error codes, using "Prepay F344" for edit-related corrections and appropriate error codes for non-edit-related corrections.
+
+By following these steps, claims for Individual Family Plans (IFP) can be processed accurately and in a timely manner, ensuring proper pricing and reimbursement.`, // full text A
+
+    
+    "Cigna Pathwell Specialty Benefit Facets": `PPathwell Network Claims Handling Procedures:
+
+1. Verify if the claim is related to the Pathwell Network.
+2. Identify the type of service and check for any overrides applied to the claim.
+3. Review the payment level override and ensure it aligns with the Pathwell Network.
+4. Confirm if the authorized services are on file and approved.
+5. Apply the correct Pathwell Drug Type of Service (TOS) override and payment level.
+6. If authorized services are not available or denied, follow precertification procedures.
+7. For claims from non-Pathwell providers with authorized services:
+   - Ensure the Pathwell Specialty in-network benefit override is applied.
+8. For claims from non-Pathwell providers with unauthorized or denied services:
+   - Check for network agreement (Cigna or Pathwell) and apply corresponding pricing.
+   - Avoid applying external pricing overrides.
+
+Notes:
+- Ensure all necessary claim notes are added for appropriate processing or denial.
+- In cases where the Benefit Summary shows both the CSN Network and Pathwell Specialty Network, follow the specific steps outlined in the provided example.
+- Handle pricing disputes by opening an intake for quality coach review when needed.`, // full text B
+
+  };
+
+
   const resultSteps2 = [
     { text: "Claims Data Verification", bold: true },
     {parts: ["Patient demographic – ",
@@ -177,7 +700,7 @@ function App() {
       { word: " Matched ", highlight: true, color: "#377855", fontColor: "white", bold: true},],},  
     { text: "COB"},
     { text: " "},
-    { text: "Sagility AI copilot Actions", bold: true },
+    { text: "", bold: true },
     { text: "Provider and Facility Selection for Prepay Edits", 
       link: "#", 
       onClick: () => setShowContainer3Content(true)  },
@@ -199,10 +722,51 @@ function App() {
   return (
     
     
+    
     <div className="App">
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept=".doc,.docx"
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, ""); // remove extension
+            setUploadedFileName(fileNameWithoutExt);
+            
+            setShowLoadingIndicator(true); 
+            setStartTyping(false);         
+          
+            const selectedText = fileTextMap[fileNameWithoutExt];
+            setPendingFullText(selectedText || ""); // store first, not yet type
+          
+            setTimeout(() => {
+              setShowLoadingIndicator(false); 
+              setFullTextToType(selectedText || ""); // finally set after 10 seconds
+              setStartTyping(true);           
+            }, 10000);
+          
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+              const arrayBuffer = event.target.result;
+              try {
+                const result = await mammoth.extractRawText({ arrayBuffer });
+                setWordContent(result.value);
+                console.log("Extracted Word content:", result.value);
+              } catch (error) {
+                console.error("Error reading Word file:", error);
+                alert("Failed to read the Word document.");
+              }
+            };
+            reader.readAsArrayBuffer(file);
+          }
+        }}
+      />
+
  
       {/* Responsive Dark Header */}
-      <header
+  <header
   className="navbar navbar-expand-lg"
   style={{
     background: 'linear-gradient(to right, #003057, #009CA6)',
@@ -222,272 +786,178 @@ function App() {
     />
 
 <span className="navbar-brand mb-0 h1" style={{ color: 'white', fontWeight: '600', fontSize: '20px', fontFamily: 'Lexend', marginLeft: '620px' }}>
-       AI-Powered Claim Examiner
+       AI-Powered Virtual Claims Examiner
     </span>
 
-    <div className="d-flex ms-auto gap-3">
-      <span className="nav-link text-white" style={{ cursor: 'pointer', fontWeight: 500 }}>Home</span>
-      <span className="nav-link text-white" style={{ cursor: 'pointer', fontWeight: 500 }}>Settings</span>
-      <span className="nav-link text-white" style={{ cursor: 'pointer', fontWeight: 500 }}>User</span>
-      <span className="nav-link text-white" style={{ cursor: 'pointer', fontWeight: 500 }}>Logout</span>
-    </div>
+    <div className="d-flex ms-auto align-items-center gap-3">
+    <span
+      className="nav-link text-white"
+      style={{ cursor: 'pointer', fontWeight: 500 }}
+      onClick={handleHome}
+    >
+      Home
+    </span>
+
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <Dropdown>
+      <Dropdown.Toggle
+        variant="link"
+        style={{
+          color: 'white',
+          fontWeight: 500,
+          textDecoration: 'none',
+          padding: 0,
+          marginTop: '-2px' // 🔥 slight adjustment to vertically center
+        }}
+        id="dropdown-basic"
+      >
+        Report
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        <Dropdown.Item onClick={handleDownload}>Dashboard</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+  </div>
+
+  <span className="nav-link text-white" style={{ cursor: 'pointer', fontWeight: 500 }}>User</span>
+  <span className="nav-link text-white" style={{ cursor: 'pointer', fontWeight: 500 }}>Logout</span>
+</div>
+
+
   </div>
 </header>
 
-{/* <div
-  style={{
-    padding: '20px 40px',
-    backgroundColor: '#f4f6f9',
-    borderBottom: '1px solid #ccc',
-    fontFamily: 'Lexend',
-    
-  }}
-  className="container-fluid"
->
-  <Form className="d-flex align-items-center gap-3" style={{ marginBottom: '-10px', marginTop: '-10px' }}>
-    <Form.Label style={{ marginBottom: '0', fontWeight: '500', fontSize: '15px' }}>
-      Select Article
-    </Form.Label>
-    <Form.Select
-      aria-label="Select Option"
-      style={{
-        width: '480px',
-        border: '1px solid #ccc',
-        borderRadius: '6px',
-        padding: '8px 12px',
-        fontSize: '14px',
-        boxShadow: 'none',
-        outline: 'none',
-        backgroundColor: 'white',
-        fontFamily: 'Lexend',
-        transition: 'border 0.3s ease-in-out'
-      }}
-    >
-      <option value="0"></option>
-      <option value="1">000017760 - Claim Processing Checklist Facets</option>
-      <option value="2">000026223 - Timely Filing Deny Incorr Facets Prepay Edit</option>
-      <option value="3">000049486 - Timely Filing IFP Facets Prepay Edit</option>
-    </Form.Select>
-  </Form>
-</div> */}
 
-      
-      <Container className="mt-4" style={{ /*backgroundColor: '#f4f4f4',*/ maxWidth: '1800px' }}>
+{showMainContainer ? (
+  
+  <Container className="mt-4" style={{ /*backgroundColor: '#f4f4f4',*/ maxWidth: '1800px' }}>
+      <button
+          onClick={handleStartsProgress}
+          className="btn btn-primary"
+          style={{ width: '280px', paddingTop: '4px', height: '30px', marginLeft: '-1500px', marginTop: '-15px', marginBottom: '8px', fontSize: '14px', }}
+        >
+          Gen-AI Knowledge Article Ingestion 
+          
+        </button>
+        
         <Row>
+        <div className="UploadFile" style={{ fontSize: '14px', textAlign: 'left', marginLeft: '290px', marginTop: '-33px' }} >
+        {uploadedFileName && (
+          <span><b></b> <b>{uploadedFileName}</b></span>
+          )}
+        </div>
+        
           <Col>
-          <div className="container1" >
+          
+          <div className="container1" style={{ }} >
                 
 
 
-            <div className="scrollable-rounded-inner"
+            <div className="panelArticle"
+                    style={{ 
+                    display: uploadedFileName ? 'block' : 'none',  // <-- show if file selected
+                    backgroundColor: '#ffffff',
+                    padding: '30px',
+                    border: '1px solid #009CA6',
+                    borderRadius: '10px',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                    marginBottom: '20px',
+                    maxHeight: '375px',
+
+                    fontFamily: 'Lexend',
+                    fontSize: '14px',
+                    lineHeight: '1.6'
+                                }}
+                              >
+                    {wordContent && (
+                        <div style={{
+                          marginTop: '-15px',
+                          padding: '20px',
+                          backgroundColor: '#ffffff',                        
+                          borderRadius: '10px',
+                          maxHeight: '340px',
+                          maxWidth: '600px',
+                          overflowY: 'auto',
+                          fontFamily: 'Lexend',
+                          fontSize: '14px',
+                          whiteSpace: 'pre-wrap',
+                          textAlign: 'left'
+                        }}>
+                          {wordContent}
+                        </div>
+
+                        
+                      )}
+                
+                {showLoadingIndicator && (
+                      <div style={{ 
+                        marginTop: '20px',
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        fontFamily: 'Lexend',
+                        fontSize: '16px',
+                        fontWeight: '500',
+                        color: '#555'
+                      }}>
+                        {/* Rotating hourglass */}
+                        <div style={{
+                          animation: 'spin 1.5s linear infinite',
+                          marginRight: '10px',
+                          fontSize: '24px'
+                        }}>
+                          ⏳
+                        </div>
+
+                        {/* Loading text with animated dots */}
+                        <div>
+                          Summarizing Article<span className="dot-flash">.</span><span className="dot-flash">.</span><span className="dot-flash">.</span>
+                        </div>
+                      </div>
+                    )}
+
+                  
+            </div>
+              
+            {startTyping && (
+                <div classname="panelTextArea"
                 style={{
+                  
                   backgroundColor: '#ffffff',
-    padding: '30px',
-    border: '1px solid #009CA6',
-    borderRadius: '10px',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-    marginBottom: '20px',
-    maxHeight: '400px',
-    overflowY: 'auto',
-    fontFamily: 'Lexend',
-    fontSize: '14px',
-    lineHeight: '1.6'
+                  padding: '40px',
+                  border: '1px solid #009CA6',
+                  borderRadius: '10px',
+                  boxShadow: '4px 4px 6px rgba(0, 0, 0, 0.2)',
+                  textAlign: 'left',
+                  maxHeight: '730px', // Set max height here
+                  overflowY: 'auto'   // Enable vertical scrolling when content exceeds max height
                 }}
               >
-                {/* Title Section */}
-                <div className="header-box" style={{ background: '#f1f1f1', padding: '15px 30px', fontSize: '18px', fontWeight: 'bold', border: '1px solid #54698d' }}>
-                  <b>Timely Filing IFP Facets Prepay Edit</b>
-                </div>
-
-                {/* Article Information Table */}
-                <div className="box">
-                  <table className="table table-bordered" style={{ fontSize: '14px', width: '100%', marginTop: '20px' }}>
-                    <tbody>
-                      <tr>
-                        <td>Article Number</td>
-                        <td><a href="https://cignaknowledge.my.salesforce.com/lightning/r/Knowledge__kav/ka0Vo000000LqlBIAS/view" target="_blank" rel="noopener noreferrer">000049486</a></td>
-                      </tr>
-                      <tr>
-                        <td>Knowledge Domain Ownership</td>
-                        <td>AAPS Prepay Postpay Solutions</td>
-                      </tr>
-                      <tr>
-                        <td>Validation Status</td>
-                        <td>Verified</td>
-                      </tr>
-                      <tr>
-                        <td>Views</td>
-                        <td>1850</td>
-                      </tr>
-                      <tr>
-                        <td>Last Modified Date</td>
-                        <td>03/06/2025 01:00 AM</td>
-                      </tr>
-                      <tr>
-                        <td>Created Date</td>
-                        <td>11/10/2021 04:36 PM</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <br />
                 
-                {/* Section Title */}
-                <div className="article-section-title" style={{ padding: '10px 20px', background: '#f1f1f1', width: '100%', fontSize: '18px', fontWeight: 'bold', borderRadius: '5px' }}>
-                  Article
+                <div  style={{ margin: '-30px 0' }}>
+                  <label style={{ display: 'block', marginBottom: '5px' }}></label>
+                  <textarea
+                    ref={textareaRef}
+                    rows="14"
+                    cols="50"
+                    placeholder=""
+                    style={{
+                      width: '100%',
+                      padding: '10px',
+                      fontSize: '14px',
+                      border: '1px solid #ccc',
+                      borderRadius: '5px',
+                      resize: 'vertical'
+                    }}
+                    value={textareaContent}
+                    onChange={(e) => setTextareaContent(e.target.value)}
+                  ></textarea>
                 </div>
-                <p style={{ fontSize: '14px', fontWeight: 'bold', marginTop: '20px', marginBottom: '0px', textAlign: 'left' }}>Title</p>
-                <p style={{ fontSize: '14px', textAlign: 'left' }}>Timely Filing IFP Facets Prepay Edit </p>
-
-                <p style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '0px', textAlign: 'left' }}>Summary</p>
-                <p style={{ fontSize: '14px', textAlign: 'left' }}>
-                The purpose of this Prepay edit is to ensure timely filing is applied correctly for Individual Family Plans (IFP).
-                </p>
-
-                <p style={{ fontSize: '14px', fontWeight: 'bold', marginTop: '20px', marginBottom: '0px', textAlign: 'left' }}>Details - Internal</p>
-                <p style={{ fontSize: '14px', textAlign: 'left', color: '#c0392b' }}>
-                <i><b>Important!</b></i> The information outlined in this article should be followed in addition to standard processes and account specifics.
-                </p>
-
-                <p style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '0px', textAlign: 'left' }}>Edit Notes:</p>
-                <ul style={{ fontSize: '14px', textAlign: 'left' }}>
-                    <li>This article is for Prepay use only; F344</li>
-                    <li>This is a Total Quality (TQ)/Underpayment edit.</li>
-                    <li>When the claim date of service (DOS) is prior to July 11, 2023, refer to the <a href="https://cignaknowledge.my.salesforce.com/articles/Knowledge/Prepay-Timely-Filing-Pre-COVID-and-COVID-Calculation" target="_blank" rel="noopener noreferrer">Prepay Timely Filing Pre-COVID and COVID Calculation</a> article to determine if the claim was received within the applicable IFP timely filing period.</li>
-                    <li>•	Cigna standard will apply whichever of the following allows the maximum number of days: </li>
-                      <ul style={{ fontSize: '14px', textAlign: 'left' }}>
-                        <li>State exceptions</li>
-                        <li>Provider/Facility contract exception</li>
-                        <li>Client Account level exception</li>
-                        <li>Client-Specific Network (CSN) level</li>
-                      </ul>
-                </ul>
-
-                <ol style={{ fontSize: '14px', textAlign: 'left' }}>
-                  <li>After viewing the claim submission, determine if any of the following exclusions apply:</li>
-                  <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li>The claim is being adjusted per a request from Legal.</li>
-                        <li>The claim was prepriced by LifeSOURCE.</li>
-                        <li>The claim has a LifeSOURCE contracted / negotiated rate.</li>
-                        <li>The claim is for Medicaid reimbursement.</li>
-                </ul>
-
-                <p style={{marginBottom: '0px'}}><b>No:</b> Go to the next step. </p>
-                <p><b>Yes:</b> This edit does not apply.  Follow standard processing guidelines.</p>
-
-                <li>Verify provider selection on the claim is correct by referring to the <a href="https://cignaknowledge.my.salesforce.com/articles/Knowledge/Review-Provider-Selection" target="_blank" rel="noopener noreferrer">Provider and Facility Selection for Prepay Edits</a> article.</li>
-                  <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li>Make any necessary corrections and return to this edit.</li>
-                        <li>Go to the next step.</li>
-                </ul>
-
-                <li style={{marginBottom: '15px'}}>Determine if the provider is In-Network (INN) or Out-of-Network (OON) with Cigna. </li>
-                  
-                <p style={{marginBottom: '0px'}}><b>OON:</b> Go to the next step. </p>
-                <p><b>INN:</b> </p>
-                  
-                  <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li>This edit does not apply. Follow standard processing guidelines.</li>
-                        <li>Document the T4 Notes field with "network prov”.</li>
-                </ul>
-
-                <li>Determine if any of the following apply to the claim. </li>
-                  <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li>Cigna is secondary, including Medicare</li>
-                        <li>Medicaid Reclamation claim</li>
-                        <li>Veteran Administration (VA) claim</li>
-                        <li>Adjustment</li>
-                        <li>Corrected claim</li>
-                </ul>
-
-                <p style={{marginBottom: '0px'}}><b>No:</b> Go to the next step. </p>
-                <p><b>Yes:</b> This edit does not apply.  Follow standard processing guidelines.</p>
-
-
-                <li style={{marginBottom: '15px'}}>Use the following to process the claim.</li>  
-                <p style={{marginBottom: '0px'}}><b>Notes:</b></p>
-                <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li>The timely filing starts on the last consecutive day of the confinement for inpatient admission facility charges.  </li>
-                        <li>The timely filing period begins with the DOS of the last visit for global maternity services.</li>
-                        <li>If multiple dates of service are billed, review and process per each DOS submitted.</li>
-                </ul>
-                <p style={{marginBottom: '15px'}}><b>IFP Account is North Carolina:</b> Determine if the claim was received within 18 months of the date of service. </p>
-                <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '25px' }}>
-                        <li><b>No:</b>Go to the next step.</li>
-                        <li><b>Yes:</b></li>
-
-                        <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li>Override timely filing by accessing the <b>Claim Override</b> screen, check <b>Bypass Claim Accept Months</b> with Explanation Code (EXCD) OCA.</li>
-                        <li>Follow standard processing guidelines.</li>
-                        <li>Go to the Out-of-network (OON) savings step.</li>
-                </ul>
-                </ul>
-
-                <p style={{marginBottom: '15px'}}><b>IFP Account is NOT North Carolina:</b> Determine if the claim was received within 15 months of the date of service. </p>
-                <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li><b>No:</b>Go to the next step.</li>
-                        <li><b>Yes:</b></li>
-
-                        <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '25px' }}>
-                        <li>Override timely filing by accessing the <b>Claim Override</b> screen, check <b>Bypass Claim Accept Months</b> with Explanation Code (EXCD) OCA.</li>
-                        <li>Follow standard processing guidelines.</li>
-                        <li>Go to the OON savings step.</li>
-                </ul>
-                </ul>
-                
-
-
-                <li style={{marginBottom: '15px'}}>Determine if any of the following apply to the claim. </li>
-                <p style={{marginBottom: '15px'}}><b>Notes:</b> Ensure that timely filing is reviewed using all current timely filing rules in the <b>Summary Notes.</b></p>
-                <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '25px' }}>
-                        <li><b>No:</b>This edit does not apply. Follow standard processing guidelines. </li>
-                        <li><b>Yes:</b></li>
-
-                        <ul style={{ fontSize: '14px', textAlign: 'left', marginBottom: '15px' }}>
-                        <li>Override timely filing by accessing the <b>Claim Override</b> screen, check <b>Bypass Claim Accept Months</b> with Explanation Code (EXCD) OCA.</li>
-                        <li>Follow standard processing guidelines.</li>
-                        <li>Go to the next step.</li>
-                </ul>
-                </ul>
-                </ol>
-                
-
-
+  
+  
               </div>
-              
+              )}
 
-              <div 
-              style={{
-                backgroundColor: '#ffffff',
-                padding: '40px',
-                border: '1px solid #009CA6',
-                borderRadius: '10px',
-                boxShadow: '4px 4px 6px rgba(0, 0, 0, 0.2)',
-                textAlign: 'left',
-                maxHeight: '350px', // Set max height here
-                overflowY: 'auto'   // Enable vertical scrolling when content exceeds max height
-              }}
-            >
-              
-              <div style={{ margin: '-30px 0' }}>
-                <label style={{ display: 'block', marginBottom: '5px' }}></label>
-                <textarea
-                  rows="14"
-                  cols="50"
-                  placeholder=""
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    fontSize: '14px',
-                    border: '1px solid #ccc',
-                    borderRadius: '5px',
-                    resize: 'vertical'
-                  }}
-                ></textarea>
-              </div>
-
-
-            </div>
 
            </div>
             
@@ -497,80 +967,90 @@ function App() {
           <Col>
             <div style={{}}>
             
-                <div className="scrollable-rounded-inner" style={{
-                  backgroundColor: '#ffffff',
-                  padding: '30px',
-                  border: '1px solid #009CA6',
-                  borderRadius: '10px',
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-                  textAlign: 'left',
-                  fontFamily: 'Lexend',
-                  fontSize: '14px',
-                  maxHeight: '380px',
-                  marginBottom: '20px',
-                  overflowY: 'auto'
-                }}>
-              
-              <div style={{ marginBottom: '5px', fontStyle: 'italic', color: '#444' }}>{loadingMessage}</div>
-  <ProgressBar
-    now={progress}
-    variant="info"
-    style={{ height: '18px', borderRadius: '5px' }}
-  />
 
-                  {visibleResultSteps.length > 0 && (
-                      <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '14px' }}>
-                        {visibleResultSteps.map((line, index) => (
-                          <p key={index} style={{ marginBottom: '3px' }}>
-                            {line.link ? (
-                                        <a
-                                          href={line.link}
-                                          onClick={(e) => {
-                                            e.preventDefault();
-                                            if (line.onClick) line.onClick();
-                                          }}
-                                          style={{ textDecoration: 'underline', color: '#0d6efd', cursor: 'pointer' }}
-                                        >
-                                          {line.parts ? (
-                                            line.parts.map((part, idx) =>
-                                              typeof part === "string" ? part : (
-                                                <span
-                                                      key={idx}
-                                                      style={{
-                                                        backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
-                                                        color: part.fontColor || 'inherit',
-                                                        fontWeight: part.bold ? 'bold' : 'normal'
-                                                      }}
-                                                    >
-                                                      {part.word}
-                                                    </span>
-                                                                                                  )
-                                                                                                )
-                                                                                              ) : line.bold ? <b>{line.text}</b> : line.text}
-                                                                                            </a>
-                                                                                          ) : line.parts ? (
-                                                                                            line.parts.map((part, idx) =>
-                                                                                              typeof part === "string" ? part : (
-                                                                                                <span
-                                                      key={idx}
-                                                      style={{
-                                                        backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
-                                                        color: part.fontColor || 'inherit',
-                                                        fontWeight: part.bold ? 'bold' : 'normal'
-                                                      }}
-                                                    >
-                                                      {part.word}
-                                                    </span>
-                                          )
-                                        )
-                                      ) : line.bold ? <b>{line.text}</b> : line.text}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-                </div>
-                
-                <div className="scrollable-rounded-inner" style={{
+            {showPanelAction && (
+              <div className="scrollable-rounded-inner" style={{
+                backgroundColor: '#ffffff',
+                padding: '30px',
+                border: '1px solid #009CA6',
+                borderRadius: '10px',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+                textAlign: 'left',
+                fontFamily: 'Lexend',
+                fontSize: '14px',
+                maxHeight: '380px',
+                marginBottom: '20px',
+                overflowY: 'auto'
+              }}>
+
+                            <div className="header-box" style={{ marginTop: '-15px', marginBottom: '20px', background: '#AAD5FF', padding: '15px 30px', fontSize: '16px', fontWeight: 'bold', border: '1px solid #54698d', height:'40px'}}>
+                                <b></b>
+                                <p style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '-10px', textAlign: 'center', marginBottom: '5px' }}>Sagility AI Copilot Actions</p>
+                              </div>
+
+                            <div style={{ marginBottom: '5px', fontStyle: 'italic', color: '#444' }}>{loadingMessage}</div>
+                      <ProgressBar
+                        now={progress}
+                        variant="info"
+                        style={{ height: '18px', borderRadius: '5px' }}
+                      />
+
+                      {visibleResultSteps.length > 0 && (
+                          <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '14px' }}>
+                            {visibleResultSteps.map((line, index) => (
+                              <p key={index} style={{ marginBottom: '3px' }}>
+                                {line.link ? (
+                            <a
+                              href={line.link}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (line.onClick) line.onClick();
+                            }}
+                            style={{ textDecoration: 'underline', color: '#0d6efd', cursor: 'pointer' }}
+                          >
+                            {line.parts ? (
+                              line.parts.map((part, idx) =>
+                                typeof part === "string" ? part : (
+                                  <span
+                                        key={idx}
+                                        style={{
+                                          backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
+                                          color: part.fontColor || 'inherit',
+                                          fontWeight: part.bold ? 'bold' : 'normal'
+                                        }}
+                                      >
+                                        {part.word}
+                                      </span>
+                                                                                    )
+                                                                                  )
+                                                                                ) : line.bold ? <b>{line.text}</b> : line.text}
+                                                                              </a>
+                                                                            ) : line.parts ? (
+                                                                              line.parts.map((part, idx) =>
+                                                                                typeof part === "string" ? part : (
+                                                                                  <span
+                                        key={idx}
+                                        style={{
+                                          backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
+                                          color: part.fontColor || 'inherit',
+                                          fontWeight: part.bold ? 'bold' : 'normal'
+                                        }}
+                                      >
+                                        {part.word}
+                                      </span>
+                            )
+                          )
+                        ) : line.bold ? <b>{line.text}</b> : line.text}
+            </p>
+          ))}
+        </div>
+      )}
+</div>
+)}
+
+          
+{showPanelValidation && (
+  <div className="scrollable-rounded-inner" style={{
                   backgroundColor: '#ffffff',
                   padding: '30px',
                   border: '1px solid #009CA6',
@@ -584,55 +1064,55 @@ function App() {
                 }}>
               
               <div style={{ marginBottom: '5px', fontStyle: 'italic', color: '#444' }}>{loadingMessage2}</div>
-  <ProgressBar
-    now={progress4}
-    variant="info"
-    style={{ height: '18px', borderRadius: '5px' }}
-  />
-                
-                    {visibleResultSteps2.length > 0 && (
-                      <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '14px' }}>
-                        {visibleResultSteps2.map((line, index) => (
-                          <p key={index} style={{ marginBottom: '3px' }}>
-                          {line.link ? (
-                                      <a
-                                        href={line.link}
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          if (line.onClick) line.onClick();
-                                        }}
-                                        style={{ textDecoration: 'underline', color: '#0d6efd', cursor: 'pointer' }}
+                                        <ProgressBar
+                                          now={progress4}
+                                          variant="info"
+                                          style={{ height: '18px', borderRadius: '5px' }}
+                                        />
+                                                      
+                                                          {visibleResultSteps2.length > 0 && (
+                                                            <div style={{ marginTop: '20px', textAlign: 'left', fontSize: '14px' }}>
+                                                              {visibleResultSteps2.map((line, index) => (
+                                                                <p key={index} style={{ marginBottom: '3px' }}>
+                                                                {line.link ? (
+                                                                            <a
+                                                                              href={line.link}
+                                                                              onClick={(e) => {
+                                                                                e.preventDefault();
+                                                                                if (line.onClick) line.onClick();
+                                                                              }}
+                                                                              style={{ textDecoration: 'underline', color: '#0d6efd', cursor: 'pointer' }}
+                                                                            >
+                                                                              {line.parts ? (
+                                                                                line.parts.map((part, idx) =>
+                                                                                  typeof part === "string" ? part : (
+                                                                                    <span
+                                      key={idx}
+                                      style={{
+                                        backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
+                                        color: part.fontColor || 'inherit',
+                                        fontWeight: part.bold ? 'bold' : 'normal'
+                                      }}
                                       >
-                                        {line.parts ? (
-                                          line.parts.map((part, idx) =>
-                                            typeof part === "string" ? part : (
-                                              <span
-key={idx}
-style={{
-  backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
-  color: part.fontColor || 'inherit',
-  fontWeight: part.bold ? 'bold' : 'normal'
-}}
->
-{part.word}
-</span>
-                                            )
-                                          )
-                                        ) : line.bold ? <b>{line.text}</b> : line.text}
-                                      </a>
-                                    ) : line.parts ? (
-                                      line.parts.map((part, idx) =>
-                                        typeof part === "string" ? part : (
-                                          <span
-key={idx}
-style={{
-  backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
-  color: part.fontColor || 'inherit',
-  fontWeight: part.bold ? 'bold' : 'normal'
-}}
->
-{part.word}
-</span>
+                                      {part.word}
+                                      </span>
+                                                                                  )
+                                                                                )
+                                                                              ) : line.bold ? <b>{line.text}</b> : line.text}
+                                                                            </a>
+                                                                          ) : line.parts ? (
+                                                                            line.parts.map((part, idx) =>
+                                                                              typeof part === "string" ? part : (
+                                                                                <span
+                                      key={idx}
+                                      style={{
+                                        backgroundColor: part.highlight ? (part.color || 'yellow') : 'transparent',
+                                        color: part.fontColor || 'inherit',
+                                        fontWeight: part.bold ? 'bold' : 'normal'
+                                      }}
+                                      >
+                                      {part.word}
+                                      </span>
                                         )
                                       )
                                     ) : line.bold ? <b>{line.text}</b> : line.text}
@@ -641,42 +1121,172 @@ style={{
                       </div>
                     )}
 
-                </div>    
+                </div> 
+)}
+                   
               
             </div>
           </Col>
 
           
           <Col>
-          <div style={{ backgroundColor: 'white', padding: '20px', border: '1px solid #009CA6', textAlign: 'left', borderRadius: '10px', boxShadow: '4px 4px 6px rgba(0, 0, 0, 0.2)', }}>
-                  {showContainer3Content ? (
-                    <div className="box">
-                              
-                            
-                      <PDFv/>
+
+          {showPanelPDF && (
+          <div className="panelPDF" style={{ backgroundColor: 'white', padding: '20px', border: '1px solid #009CA6', textAlign: 'left', borderRadius: '10px', boxShadow: '4px 4px 6px rgba(0, 0, 0, 0.2)', }}>
+          {showContainer3Content ? (
+            <div >
+                      
+                    
+              <PDFv/>
 
 
-                    </div>
-                  ) : (
-                    <p style={{ fontStyle: 'italic', color: '#555' }}></p>
-                  )}
-                </div>
+            </div>
+          ) : (
+            <p style={{ fontStyle: 'italic', color: '#555' }}></p>
+          )}
+        </div>
+)}
+
+
           </Col>
         </Row>
+
+        {showGenKAButton && (
+  <div style={{ marginTop: '-15px', textAlign: 'left', marginLeft:'-60px' }} className="genKA">
+    <button
+      onClick={handleStartProgress}
+      className="btn btn-primary"
+      style={{ width: '250px', paddingTop: '5px', height: '40px', marginLeft: '60px' }}
+    >
+      Gen-AI Knowledge Agent
+    </button>
+  </div>
+)}
+
       </Container>
 
-      
-      <div style={{ marginTop: '10px', textAlign: 'left' }} className="container-fluid">
+) : (
+  <Container className="" style={{ maxWidth: '1200px', minHeight: '400px', /*backgroundColor: '#f9f9f9',*/ padding: '30px', borderRadius: '10px', marginTop:'-10px' }}>
+    {/* NEW container content here */}
+    <h2 style={{ fontFamily: 'Lexend', color: '#003057', textAlign: 'center', marginBottom: '30px' }}>
+  📊 Detailed Claims Dashboard
+</h2>
 
-      <button
-          onClick={handleStartProgress}
-          className="btn btn-primary"
-          style={{ width: '200px', paddingTop: '5px', height: '40px', marginLeft: '60px' }}
-        >
-          Summarize Article
-        </button>
-             
-        </div>
+<Row>
+  {/* Claims by Manager */}
+  <Col md={6}>
+      <DashboardCard title="Claims per Manager">
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={getClaimsByManager()}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="Manager" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="Count" fill="#009CA6" />
+          </BarChart>
+        </ResponsiveContainer>
+      </DashboardCard>
+  </Col>
+
+  {/* Offshore vs Onshore */}
+  <Col md={6}>
+    <DashboardCard title="Offshore vs Onshore">
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            data={getOffshoreSplit()}
+            dataKey="value"
+            nameKey="name"
+            outerRadius={100}
+            label
+          >
+            {getOffshoreSplit().map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={["#00C49F", "#FF8042"][index % 2]} />
+            ))}
+          </Pie>
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
+    </DashboardCard>
+  </Col>
+</Row>
+
+<Row>
+  {/* ASO vs FI */}
+  <Col md={6}>
+    <DashboardCard title="ASO vs FI Claims">
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={getAsoFiSplit()}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="Type" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="Count" fill="#54698d" />
+        </BarChart>
+      </ResponsiveContainer>
+    </DashboardCard>
+  </Col>
+
+  {/* Claims Over Time */}
+  <Col md={6}>
+    <DashboardCard title="Claims Received Date">
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={getClaimsOverTime()}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="Date" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="Count" stroke="#82ca9d" />
+        </LineChart>
+      </ResponsiveContainer>
+    </DashboardCard>
+  </Col>
+</Row>
+
+<Row>
+  {/* Status Breakdown */}
+  <Col md={12}>
+    <DashboardCard title="Status Breakdown">
+      <ResponsiveContainer width="100%" height={400}>
+        <PieChart>
+          <Pie
+            data={getStatusBreakdown()}
+            dataKey="value"
+            nameKey="name"
+            outerRadius={150}
+            label
+          >
+            {getStatusBreakdown().map((entry, index) => (
+              <Cell key={`cell-status-${index}`} fill={["#0088FE", "#FFBB28", "#FF8042"][index % 3]} />
+            ))}
+          </Pie>
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
+    </DashboardCard>
+  </Col>
+</Row>
+<div style={{ textAlign: 'center', marginTop: '-15px' }}>
+  <button
+    className="btn btn-primary"
+    style={{ width: '200px', height: '45px', fontSize: '16px', fontWeight: '600' }}
+    onClick={handleFinalDownload}
+  >
+    Download
+  </button>
+</div>
+  </Container>
+)}
+
+
+      
+      
+
+
+
 
                       {/* POPUP Modal after 100% */}
       {showPopup && (

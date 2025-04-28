@@ -21,7 +21,7 @@ code {
 
 /* Fix inner content to allow scrolling but keep corners nice */
 .scrollable-rounded-inner {
-  overflow-y: auto;
+  /* overflow-y: auto;*/
   max-height: 100%;
   padding-right: 10px; /* prevent text from hiding under the scrollbar */
 }
