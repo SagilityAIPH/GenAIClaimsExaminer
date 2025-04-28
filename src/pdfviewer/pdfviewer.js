@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Document, Page } from 'react-pdf';
 
-const PdfViewer = ({ filePath = "/251391026100.pdf" }) => {
+// const PdfViewer = ({ filePath = "/251391026100.pdf" }) => {
+const PdfViewer = ({ filePath = process.env.PUBLIC_URL + "/251391026100.pdf" }) => {
   const [scale, setScale] = useState(1.0);
   const [numPages, setNumPages] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
