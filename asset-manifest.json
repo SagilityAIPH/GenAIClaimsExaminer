@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/GenAIClaimsExaminer/static/css/main.753d5cae.css",
-    "main.js": "/GenAIClaimsExaminer/static/js/main.cc474a9c.js",
-    "static/js/453.880f37cc.chunk.js": "/GenAIClaimsExaminer/static/js/453.880f37cc.chunk.js",
+    "main.css": "/GenAIClaimsExaminer/static/css/main.e6fff4d2.css",
+    "main.js": "/GenAIClaimsExaminer/static/js/main.59daeb91.js",
+    "static/js/453.85ab5283.chunk.js": "/GenAIClaimsExaminer/static/js/453.85ab5283.chunk.js",
     "static/media/Picture5.png": "/GenAIClaimsExaminer/static/media/Picture5.326b549f539beaa520f7.png",
     "index.html": "/GenAIClaimsExaminer/index.html",
-    "main.753d5cae.css.map": "/GenAIClaimsExaminer/static/css/main.753d5cae.css.map",
-    "main.cc474a9c.js.map": "/GenAIClaimsExaminer/static/js/main.cc474a9c.js.map",
-    "453.880f37cc.chunk.js.map": "/GenAIClaimsExaminer/static/js/453.880f37cc.chunk.js.map"
+    "main.e6fff4d2.css.map": "/GenAIClaimsExaminer/static/css/main.e6fff4d2.css.map",
+    "main.59daeb91.js.map": "/GenAIClaimsExaminer/static/js/main.59daeb91.js.map",
+    "453.85ab5283.chunk.js.map": "/GenAIClaimsExaminer/static/js/453.85ab5283.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.753d5cae.css",
-    "static/js/main.cc474a9c.js"
+    "static/css/main.e6fff4d2.css",
+    "static/js/main.59daeb91.js"
   ]
 }
