@@ -4,7 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {ProgressBar, Button } from 'react-bootstrap';
 import PDFv from './pdfviewer/pdfviewer'
 import './pdfworker'
@@ -14,6 +14,7 @@ import {
   BarChart, Bar, PieChart, Pie, LineChart, Line,
   CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts';
+import WordToPDFViewer from './components/WordToPDFViewer';
 
 function App() {
   const [showContainer3Content, setShowContainer3Content] = useState(false);
@@ -41,25 +42,8 @@ function App() {
 
   useEffect(() => {
     if (startTyping && fullTextToType.length > 0) {
-      setTextareaContent(""); // Reset textarea
-      setShowGenKAButton(false); // Hide button during typing
-  
-      let index = 0;
-      const interval = setInterval(() => {
-        setTextareaContent((prev) => prev + fullTextToType.charAt(index));
-        index++;
-  
-        if (textareaRef.current) {
-          textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
-        }
-  
-        if (index >= fullTextToType.length) {
-          clearInterval(interval);
-          setShowGenKAButton(true); // ✅ Show button once typing complete
-        }
-      }, 15);
-  
-      return () => clearInterval(interval);
+      setTextareaContent(fullTextToType);
+      setShowGenKAButton(true); // Show button immediately
     }
   }, [startTyping, fullTextToType]);
 
@@ -145,6 +129,8 @@ const handleHome = () => {
     }
   };
 
+  const wordViewerRef = useRef(null);
+  
   const sheet3Data = [
     {
       "Manager": "",
@@ -832,33 +818,48 @@ Notes:
 {showMainContainer ? (
   
   <Container className="mt-4" style={{ /*backgroundColor: '#f4f4f4',*/ maxWidth: '1800px' }}>
-      <button
-          onClick={handleStartsProgress}
-          className="btn btn-primary"
-          style={{ width: '280px', paddingTop: '4px', height: '30px', marginLeft: '-1500px', marginTop: '-15px', marginBottom: '8px', fontSize: '14px', }}
-        >
-          Gen-AI Knowledge Article Ingestion 
-          
-        </button>
+<button
+  onClick={() => {
+    
+    
+    wordViewerRef.current?.openFileDialog();  // Trigger file upload dialog in WordToPDFViewer
+    handleStartsProgress();               // Trigger App.js logic (e.g. loading states)
+    // After 3 seconds, show loading indicator and start progress
+
+
+  }}
+  className="btn btn-primary"
+  style={{
+    width: '280px',
+    paddingTop: '4px',
+    height: '30px',
+    marginLeft: '-1500px',
+    marginTop: '-20px',
+    marginBottom: '8px',
+    fontSize: '14px',
+  }}
+>
+  Gen-AI Knowledge Article Ingestion
+</button>
         
         <Row>
-        <div className="UploadFile" style={{ fontSize: '14px', textAlign: 'left', marginLeft: '290px', marginTop: '-33px' }} >
+        <div className="UploadFile" style={{ fontSize: '14px', textAlign: 'left', marginLeft: '290px', marginTop: '-35px' }} >
         {uploadedFileName && (
           <span><b></b> <b>{uploadedFileName}</b></span>
           )}
         </div>
         
-          <Col>
+          <Col >
           
-          <div className="container1" style={{ }} >
+          <div className="container1"   >
                 
 
 
             <div className="panelArticle"
                     style={{ 
-                    display: uploadedFileName ? 'block' : 'none',  // <-- show if file selected
+                    display: uploadedFileName ? 'block' : '',  // <-- show if file selected
                     backgroundColor: '#ffffff',
-                    padding: '30px',
+                    padding: '0px',
                     border: '1px solid #009CA6',
                     borderRadius: '10px',
                     boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
@@ -870,7 +871,7 @@ Notes:
                     lineHeight: '1.6'
                                 }}
                               >
-                    {wordContent && (
+                    {/* {wordContent && (
                         <div style={{
                           marginTop: '-15px',
                           padding: '20px',
@@ -885,11 +886,14 @@ Notes:
                           textAlign: 'left'
                         }}>
                           {wordContent}
+                          
+
                         </div>
 
                         
-                      )}
-                
+                      )} */}
+<WordToPDFViewer ref={wordViewerRef} />
+                  
                 {showLoadingIndicator && (
                       <div style={{ 
                         marginTop: '20px',
@@ -978,7 +982,7 @@ Notes:
                 textAlign: 'left',
                 fontFamily: 'Lexend',
                 fontSize: '14px',
-                maxHeight: '380px',
+                maxHeight: '375px',
                 marginBottom: '20px',
                 overflowY: 'auto'
               }}>
@@ -1059,7 +1063,7 @@ Notes:
                   textAlign: 'left',
                   fontFamily: 'Lexend',
                   fontSize: '14px',
-                  maxHeight: '370px',
+                  maxHeight: '350px',
                   overflowY: 'auto'
                 }}>
               
@@ -1132,7 +1136,14 @@ Notes:
           <Col>
 
           {showPanelPDF && (
-          <div className="panelPDF" style={{ backgroundColor: 'white', padding: '20px', border: '1px solid #009CA6', textAlign: 'left', borderRadius: '10px', boxShadow: '4px 4px 6px rgba(0, 0, 0, 0.2)', }}>
+          <div className="panelPDF" style={{ 
+            backgroundColor: 'white', 
+            padding: '20px', 
+            border: '1px solid #009CA6', 
+            textAlign: 'left', 
+            borderRadius: '10px', 
+            maxHeight: '747px', 
+            boxShadow: '4px 4px 6px rgba(0, 0, 0, 0.2)', }}>
           {showContainer3Content ? (
             <div >
                       
@@ -1149,10 +1160,12 @@ Notes:
 
 
           </Col>
+
+          
         </Row>
 
         {showGenKAButton && (
-  <div style={{ marginTop: '-15px', textAlign: 'left', marginLeft:'-60px' }} className="genKA">
+  <div style={{ marginTop: '10px', textAlign: 'left', marginLeft:'-60px' }} className="genKA">
     <button
       onClick={handleStartProgress}
       className="btn btn-primary"
@@ -1165,7 +1178,22 @@ Notes:
 
       </Container>
 
+      
+
+
+
+
+
+
+
+
+                                                                /* Dashboard Page */
+
+
+
 ) : (
+
+  
   <Container className="" style={{ maxWidth: '1200px', minHeight: '400px', /*backgroundColor: '#f9f9f9',*/ padding: '30px', borderRadius: '10px', marginTop:'-10px' }}>
     {/* NEW container content here */}
     <h2 style={{ fontFamily: 'Lexend', color: '#003057', textAlign: 'center', marginBottom: '30px' }}>
