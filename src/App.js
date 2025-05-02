@@ -15,6 +15,7 @@ import {
   CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell
 } from 'recharts';
 import WordToPDFViewer from './components/WordToPDFViewer';
+import Modal from 'react-bootstrap/Modal';
 
 function App() {
   const [showContainer3Content, setShowContainer3Content] = useState(false);
@@ -39,6 +40,9 @@ function App() {
   const [showPanelValidation, setShowPanelValidation] = useState(false);
   const [showPanelPDF, setShowPanelPDF] = useState(false);
   const [showMainContainer, setShowMainContainer] = useState(true);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+const handleVideoModalOpen = () => setShowVideoModal(true);
+const handleVideoModalClose = () => setShowVideoModal(false);
 
   useEffect(() => {
     if (startTyping && fullTextToType.length > 0) {
@@ -87,11 +91,9 @@ function App() {
   }, [startLoading4, progress4]);
 
 
-const handleDownload = () => {
-  setShowMainContainer(false); // ✅ Hide main container
-  // Later: You can also trigger other download actions if needed
-  
-};
+  const handleDownload = () => {
+    window.location.href = `${process.env.PUBLIC_URL}/Pathwell 250424.xlsx`;
+  };
 
 const handleFinalDownload = () => {
   alert('Final Download triggered!');
@@ -616,7 +618,7 @@ const handleHome = () => {
   ];
   
   const fileTextMap = {
-    "Timely Filing Deny Incorr Facets Prepay Edit": `TThis document outlines the timely filing process for Individual Family Plans (IFP) during the Prepay Edit phase. The purpose is to ensure timely filing is applied correctly, taking into account the following details:
+    "Timely Filing Deny Incorr Facets Prepay Edit": `This document outlines the timely filing process for Individual Family Plans (IFP) during the Prepay Edit phase. The purpose is to ensure timely filing is applied correctly, taking into account the following details:
 
 1. **Prepay Timely Filing IFP Facets Prepay Edit**
 
@@ -656,7 +658,7 @@ const handleHome = () => {
 By following these steps, claims for Individual Family Plans (IFP) can be processed accurately and in a timely manner, ensuring proper pricing and reimbursement.`, // full text A
 
     
-    "Cigna Pathwell Specialty Benefit Facets": `PPathwell Network Claims Handling Procedures:
+    "Cigna Pathwell Specialty Benefit Facets": `Pathwell Network Claims Handling Procedures:
 
 1. Verify if the claim is related to the Pathwell Network.
 2. Identify the type of service and check for any overrides applied to the claim.
@@ -687,9 +689,14 @@ Notes:
     { text: "COB"},
     { text: " "},
     { text: "", bold: true },
-    { text: "Provider and Facility Selection for Prepay Edits", 
+    { 
+      text: "Provider and Facility Selection for Prepay Edits", 
       link: "#", 
-      onClick: () => setShowContainer3Content(true)  },
+      onClick: () => {
+        setShowContainer3Content(true);
+        handleVideoModalOpen();
+      } 
+    },
     { text: " "},
     { text: "Duplicates", bold: true },
     { text: " "},
@@ -801,7 +808,7 @@ Notes:
       </Dropdown.Toggle>
 
       <Dropdown.Menu>
-        <Dropdown.Item onClick={handleDownload}>Dashboard</Dropdown.Item>
+        <Dropdown.Item onClick={handleDownload}>Download</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
   </div>
@@ -824,9 +831,7 @@ Notes:
     
     wordViewerRef.current?.openFileDialog();  // Trigger file upload dialog in WordToPDFViewer
     handleStartsProgress();               // Trigger App.js logic (e.g. loading states)
-    // After 3 seconds, show loading indicator and start progress
-
-
+    
   }}
   className="btn btn-primary"
   style={{
@@ -989,7 +994,7 @@ Notes:
 
                             <div className="header-box" style={{ marginTop: '-15px', marginBottom: '20px', background: '#AAD5FF', padding: '15px 30px', fontSize: '16px', fontWeight: 'bold', border: '1px solid #54698d', height:'40px'}}>
                                 <b></b>
-                                <p style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '-10px', textAlign: 'center', marginBottom: '5px' }}>Sagility AI Copilot Actions</p>
+                                <p style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '-10px', textAlign: 'center', marginBottom: '5px' }}>Sagility AI Claim Examiner</p>
                               </div>
 
                             <div style={{ marginBottom: '5px', fontStyle: 'italic', color: '#444' }}>{loadingMessage}</div>
@@ -1067,6 +1072,11 @@ Notes:
                   overflowY: 'auto'
                 }}>
               
+              <div className="header-box" style={{ marginTop: '-15px', marginBottom: '20px', background: '#AAD5FF', padding: '15px 30px', fontSize: '16px', fontWeight: 'bold', border: '1px solid #54698d', height:'40px'}}>
+                                <b></b>
+                                <p style={{ fontSize: '18px', fontWeight: 'bold', marginTop: '-10px', textAlign: 'center', marginBottom: '5px' }}>Sagility AI Copilot Actions</p>
+                              </div>
+
               <div style={{ marginBottom: '5px', fontStyle: 'italic', color: '#444' }}>{loadingMessage2}</div>
                                         <ProgressBar
                                           now={progress4}
@@ -1163,6 +1173,17 @@ Notes:
 
           
         </Row>
+        <Modal show={showVideoModal} onHide={handleVideoModalClose} size="lg" centered>
+  <Modal.Header closeButton>
+    <Modal.Title>Provider andaaa Facility Selection</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+  <video controls autoPlay muted style={{ width: '100%' }}>
+  <source src={`${process.env.PUBLIC_URL}/Pathwell_1.mp4`} type="video/mp4" />
+  Your browser does not support the video tag.
+</video>
+  </Modal.Body>
+</Modal>
 
         {showGenKAButton && (
   <div style={{ marginTop: '10px', textAlign: 'left', marginLeft:'-60px' }} className="genKA">
@@ -1177,144 +1198,13 @@ Notes:
 )}
 
       </Container>
-
-      
-
-
-
-
-
-
-
-
-                                                                /* Dashboard Page */
-
-
-
 ) : (
 
   
   <Container className="" style={{ maxWidth: '1200px', minHeight: '400px', /*backgroundColor: '#f9f9f9',*/ padding: '30px', borderRadius: '10px', marginTop:'-10px' }}>
-    {/* NEW container content here */}
-    <h2 style={{ fontFamily: 'Lexend', color: '#003057', textAlign: 'center', marginBottom: '30px' }}>
-  📊 Detailed Claims Dashboard
-</h2>
-
-<Row>
-  {/* Claims by Manager */}
-  <Col md={6}>
-      <DashboardCard title="Claims per Manager">
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={getClaimsByManager()}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="Manager" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="Count" fill="#009CA6" />
-          </BarChart>
-        </ResponsiveContainer>
-      </DashboardCard>
-  </Col>
-
-  {/* Offshore vs Onshore */}
-  <Col md={6}>
-    <DashboardCard title="Offshore vs Onshore">
-      <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
-          <Pie
-            data={getOffshoreSplit()}
-            dataKey="value"
-            nameKey="name"
-            outerRadius={100}
-            label
-          >
-            {getOffshoreSplit().map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={["#00C49F", "#FF8042"][index % 2]} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
-    </DashboardCard>
-  </Col>
-</Row>
-
-<Row>
-  {/* ASO vs FI */}
-  <Col md={6}>
-    <DashboardCard title="ASO vs FI Claims">
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={getAsoFiSplit()}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="Type" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="Count" fill="#54698d" />
-        </BarChart>
-      </ResponsiveContainer>
-    </DashboardCard>
-  </Col>
-
-  {/* Claims Over Time */}
-  <Col md={6}>
-    <DashboardCard title="Claims Received Date">
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={getClaimsOverTime()}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="Date" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="Count" stroke="#82ca9d" />
-        </LineChart>
-      </ResponsiveContainer>
-    </DashboardCard>
-  </Col>
-</Row>
-
-<Row>
-  {/* Status Breakdown */}
-  <Col md={12}>
-    <DashboardCard title="Status Breakdown">
-      <ResponsiveContainer width="100%" height={400}>
-        <PieChart>
-          <Pie
-            data={getStatusBreakdown()}
-            dataKey="value"
-            nameKey="name"
-            outerRadius={150}
-            label
-          >
-            {getStatusBreakdown().map((entry, index) => (
-              <Cell key={`cell-status-${index}`} fill={["#0088FE", "#FFBB28", "#FF8042"][index % 3]} />
-            ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
-      </ResponsiveContainer>
-    </DashboardCard>
-  </Col>
-</Row>
-<div style={{ textAlign: 'center', marginTop: '-15px' }}>
-  <button
-    className="btn btn-primary"
-    style={{ width: '200px', height: '45px', fontSize: '16px', fontWeight: '600' }}
-    onClick={handleFinalDownload}
-  >
-    Download
-  </button>
-</div>
+    
   </Container>
 )}
-
-
-      
-      
-
-
-
 
                       {/* POPUP Modal after 100% */}
       {showPopup && (
@@ -1348,6 +1238,7 @@ Notes:
     </div>
 
     
+
   );
 }
 
