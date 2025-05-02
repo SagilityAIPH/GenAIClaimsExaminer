@@ -1180,7 +1180,7 @@ Notes:
         </Row>
         <Modal show={showVideoModal} onHide={handleVideoModalClose} size="lg" centered>
   <Modal.Header closeButton>
-    <Modal.Title>Provider and Facility Selection</Modal.Title>
+    <Modal.Title></Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <video controls autoPlay muted style={{ width: '100%' }}>
