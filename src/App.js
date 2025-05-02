@@ -92,7 +92,12 @@ const handleVideoModalClose = () => setShowVideoModal(false);
 
 
   const handleDownload = () => {
-    window.location.href = `${process.env.PUBLIC_URL}/Pathwell 250424.xlsx`;
+    const link = document.createElement('a');
+    link.href = `${process.env.PUBLIC_URL}/Pathwell 250424.xlsx`;
+    link.download = 'AI Examiner Result.xlsx'; // Desired file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
 const handleFinalDownload = () => {
@@ -1175,7 +1180,7 @@ Notes:
         </Row>
         <Modal show={showVideoModal} onHide={handleVideoModalClose} size="lg" centered>
   <Modal.Header closeButton>
-    <Modal.Title>Provider andaaa Facility Selection</Modal.Title>
+    <Modal.Title>Provider and Facility Selection</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <video controls autoPlay muted style={{ width: '100%' }}>
