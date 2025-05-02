@@ -93,7 +93,7 @@ const handleVideoModalClose = () => setShowVideoModal(false);
 
   const handleDownload = () => {
     const link = document.createElement('a');
-    link.href = `${process.env.PUBLIC_URL}/Pathwell 250424.xlsx`;
+    link.href = `${process.env.PUBLIC_URL}/AI Examiner Result.xlsx`;
     link.download = 'AI Examiner Result.xlsx'; // Desired file name
     document.body.appendChild(link);
     link.click();
