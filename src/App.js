@@ -7,11 +7,13 @@ import WordToPDFViewer from './components/WordToPDFViewer';
 function App() {
   return (
     <>
+    <Router basename="/GenAIClaimsExaminer">
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/viewer" element={<WordToPDFViewer />} />
         {/* Add more routes as needed */}
       </Routes>
+    </Router>
     </>
   );
 }
